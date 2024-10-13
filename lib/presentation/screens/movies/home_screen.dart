@@ -7,7 +7,7 @@ import '../../providers/providers.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static const String path = '/';
+  // static const String path = '/';
   static const String name = 'home-screen';
 
   @override
