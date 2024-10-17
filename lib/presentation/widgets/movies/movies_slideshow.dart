@@ -12,7 +12,7 @@ class MoviesSlideshow extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return AspectRatio(
-      aspectRatio: 3,
+      aspectRatio: 2.5,
       child: Swiper(
         viewportFraction: 0.8,
         scale: 0.9,
