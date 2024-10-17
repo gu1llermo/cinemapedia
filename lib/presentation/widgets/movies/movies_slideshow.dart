@@ -12,7 +12,7 @@ class MoviesSlideshow extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return AspectRatio(
-      aspectRatio: 16 / 9,
+      aspectRatio: 3,
       child: Swiper(
         viewportFraction: 0.8,
         scale: 0.9,
@@ -48,7 +48,7 @@ class _Slide extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Image.network(
             movie.backdropPath,
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress != null) {
                 return const DecoratedBox(
