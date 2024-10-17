@@ -21,16 +21,17 @@ final actorsByMovieProvider =
 typedef GetActorsCallback = Future<List<Actor>> Function(String movieId);
 
 class ActorsByMovieNotifier extends StateNotifier<Map<String, List<Actor>>> {
-  final GetActorsCallback getActors;
+  final GetActorsCallback _getActors;
 
   ActorsByMovieNotifier({
-    required this.getActors,
-  }) : super({});
+    required Future<List<Actor>> Function(String) getActors,
+  })  : _getActors = getActors,
+        super({});
 
   Future<void> loadActors(String movieId) async {
     if (state[movieId] != null) return; // si existe entonces no cargas nada
 
-    final actors = await getActors(movieId);
+    final actors = await _getActors(movieId);
 
     state = {...state, movieId: actors};
   }
