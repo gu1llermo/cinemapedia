@@ -1,4 +1,3 @@
-import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/actors_datasource.dart';
 import 'package:cinemapedia/domain/entities/actor.dart';
 import 'package:cinemapedia/infrastructure/mappers/actor_mapper.dart';
@@ -9,7 +8,7 @@ class ActorMoviedbDatasource extends ActorsDatasource {
   final dio = Dio(BaseOptions(
     baseUrl: 'https://api.themoviedb.org/3',
     queryParameters: {
-      'api_key': Environment.theMoviedbKey,
+      'api_key': 'c244bf920d9a0ac6d8597627df5e2435',
       'language': 'es-MX'
     },
   ));
