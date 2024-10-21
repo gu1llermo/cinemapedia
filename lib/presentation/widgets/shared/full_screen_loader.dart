@@ -21,20 +21,22 @@ class FullScreenLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const CircularProgressIndicator(),
-        StreamBuilder(
-          stream: getLoadingMessages(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox();
-            }
-            return Text(snapshot.data!);
-          },
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          StreamBuilder(
+            stream: getLoadingMessages(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox();
+              }
+              return Text(snapshot.data!);
+            },
+          ),
+        ],
+      ),
     );
   }
 }
