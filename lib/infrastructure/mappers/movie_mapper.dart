@@ -42,4 +42,48 @@ class MovieMapper {
       video: movieDetail.video,
       voteAverage: movieDetail.voteAverage,
       voteCount: movieDetail.voteCount);
+
+  static Map<String, dynamic> entityToMap(Movie movie) {
+    return {
+      'sembastId': movie.sembastId,
+      'adult': movie.adult,
+      'backdropPath': movie.backdropPath,
+      'genreIds': movie.genreIds,
+      'id': movie.id,
+      'originalLanguage': movie.originalLanguage,
+      'originalTitle': movie.originalTitle,
+      'overview': movie.overview,
+      'popularity': movie.popularity,
+      'posterPath': movie.posterPath,
+      // 'releaseDate': movie.releaseDate,
+      'releaseDate': movie.releaseDate != null
+          ? "${movie.releaseDate!.year.toString().padLeft(4, '0')}-${movie.releaseDate!.month.toString().padLeft(2, '0')}-${movie.releaseDate!.day.toString().padLeft(2, '0')}"
+          : null,
+      'title': movie.title,
+      'video': movie.video,
+      'voteAverage': movie.voteAverage,
+      'voteCount': movie.voteCount,
+    };
+  }
+
+  static Movie mapToEntity(Map<String, dynamic> json) => Movie(
+        sembastId: json['sembastId'],
+        adult: json['adult'],
+        backdropPath: json['backdropPath'],
+        genreIds: List<String>.from(json['genreIds'].map((x) => x)),
+        id: json['id'],
+        originalLanguage: json['originalLanguage'],
+        originalTitle: json['originalTitle'],
+        overview: json['overview'],
+        popularity: json['popularity'],
+        posterPath: json['posterPath'],
+        // releaseDate: DateTime.parse(json['releaseDate']),
+        releaseDate: json['releaseDate'] != ''
+            ? DateTime.parse(json['releaseDate'])
+            : null,
+        title: json['title'],
+        video: json['video'],
+        voteAverage: json['voteAverage'],
+        voteCount: json['voteCount'],
+      );
 }
