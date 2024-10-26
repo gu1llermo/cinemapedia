@@ -14,7 +14,7 @@ String searchMovieResponseToJson(SearchMovieResponse data) =>
 
 class SearchMovieResponse {
   final int page;
-  final List<MovieMovieDb> results;
+  final List<MovieMovieDB> results;
   final int totalPages;
   final int totalResults;
 
@@ -28,8 +28,8 @@ class SearchMovieResponse {
   factory SearchMovieResponse.fromJson(Map<String, dynamic> json) =>
       SearchMovieResponse(
         page: json["page"],
-        results: List<MovieMovieDb>.from(
-            json["results"].map((x) => MovieMovieDb.fromJson(x))),
+        results: List<MovieMovieDB>.from(
+            json["results"].map((x) => MovieMovieDB.fromJson(x))),
         totalPages: json["total_pages"],
         totalResults: json["total_results"],
       );

@@ -1,37 +1,37 @@
-import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/domain/entities/movie.dart';
 
-final movieInfoProvider =
-    StateNotifierProvider<MovieMapNotifier, Map<String, Movie>>((ref) {
-  final repository = ref.read(movieRepositoryProvider);
-
-  return MovieMapNotifier(getMovie: repository.getMovieById);
+final movieInfoProvider = StateNotifierProvider<MovieMapNotifier, Map<String, Movie>>((ref) {
+  final movieRepository = ref.watch( movieRepositoryProvider );
+  return MovieMapNotifier(getMovie: movieRepository.getMovieById );
 });
 
+
 /*
-{
-  '11111': Movie(),
-  '22222': Movie(),
-  '33333': Movie(),
-}
+  {
+    '505642': Movie(),
+    '505643': Movie(),
+    '505645': Movie(),
+    '501231': Movie(),
+  }
 */
 
-typedef GetMovieCallback = Future<Movie> Function(String movieId);
+typedef GetMovieCallback = Future<Movie>Function(String movieId);
 
-class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
-  final GetMovieCallback _getMovie;
+class MovieMapNotifier extends StateNotifier<Map<String,Movie>> {
+
+  final GetMovieCallback getMovie;
 
   MovieMapNotifier({
-    required GetMovieCallback getMovie,
-  })  : _getMovie = getMovie,
-        super({});
+    required this.getMovie,
+  }): super({});
 
-  Future<void> loadMovie(String movieId) async {
-    if (state[movieId] != null) return; // si existe entonces no cargas nada
 
-    final movie = await _getMovie(movieId);
-
-    state = {...state, movieId: movie};
+  Future<void> loadMovie( String movieId ) async {
+    if ( state[movieId] != null ) return;
+    final movie = await getMovie( movieId );
+    state = { ...state, movieId: movie };
   }
+
 }
