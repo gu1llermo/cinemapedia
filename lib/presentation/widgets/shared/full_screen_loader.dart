@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 
+
 class FullScreenLoader extends StatelessWidget {
   const FullScreenLoader({super.key});
+  
+  Stream<String> getLoadingMessages() {
+    final messages = <String>[
+      'Cargando películas',
+      'Comprando palomitas de maíz',
+      'Cargando populares',
+      'Llamando a mi novia',
+      'Ya mero...',
+      'Esto está tardando más de lo esperado :(',
+    ];
 
-  static const List<String> _messages = [
-    'Cargando películas',
-    'Comprando palomitas de maíz',
-    'Cargando populares',
-    'Llamando a fulanito',
-    'Cualquier cosa...',
-    'Se está tardando más de lo normal',
-  ];
-
-  Stream<String> getLoadingMessages() async* {
-    yield* Stream.periodic(
-      const Duration(milliseconds: 1200),
-      (step) => _messages[step],
-    ).take(_messages.length);
+    return Stream.periodic( const Duration(milliseconds: 1200), (step) {
+      return messages[step];
+    }).take(messages.length);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +26,17 @@ class FullScreenLoader extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(),
+          const Text('Espere por favor'),
+          const SizedBox(height: 10),
+          const CircularProgressIndicator(strokeWidth: 2),
+          const SizedBox(height: 10),
+
           StreamBuilder(
             stream: getLoadingMessages(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const SizedBox();
-              }
-              return Text(snapshot.data!);
+              if ( !snapshot.hasData ) return const Text('Cargando...');
+              
+              return Text( snapshot.data! );
             },
           ),
         ],

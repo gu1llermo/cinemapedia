@@ -1,85 +1,63 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final nowPlayingMoviesProvider =
-    NotifierProvider<MoviesNotifier, List<Movie>>(() {
-  return MoviesNotifier(requestType: RequestType.nowPlaying);
+
+final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getNowPlaying;
+  return MoviesNotifier(
+    fetchMoreMovies: fetchMoreMovies
+  );
 });
 
-final popularMoviesProvider = NotifierProvider<MoviesNotifier, List<Movie>>(() {
-  return MoviesNotifier(requestType: RequestType.popular);
+final popularMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getPopular;
+  return MoviesNotifier(
+    fetchMoreMovies: fetchMoreMovies
+  );
 });
 
-final topRatedMoviesProvider =
-    NotifierProvider<MoviesNotifier, List<Movie>>(() {
-  return MoviesNotifier(requestType: RequestType.topRated);
+final upcomingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getUpcoming;
+  return MoviesNotifier(
+    fetchMoreMovies: fetchMoreMovies
+  );
 });
 
-final upcomingMoviesProvider =
-    NotifierProvider<MoviesNotifier, List<Movie>>(() {
-  return MoviesNotifier(requestType: RequestType.upcoming);
+final topRatedMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getTopRated;
+  return MoviesNotifier(
+    fetchMoreMovies: fetchMoreMovies
+  );
 });
 
-typedef MovieCallback = Future<List<Movie>> Function({int page});
 
-class MoviesNotifier extends Notifier<List<Movie>> {
-  MoviesNotifier({required this.requestType});
+
+typedef MovieCallback = Future<List<Movie>> Function({ int page });
+
+class MoviesNotifier extends StateNotifier<List<Movie>> {
+  
   int currentPage = 0;
-  bool _isLoading = false;
+  bool isLoading = false;
+  MovieCallback fetchMoreMovies;
 
-  RequestType requestType;
 
-  late MovieStrategy movieStrategy;
+  MoviesNotifier({
+    required this.fetchMoreMovies,
+  }): super([]);
 
-  @override
-  List<Movie> build() {
-    movieStrategy = MovieStrategyFactory().create(requestType, ref);
-    return [];
-  }
+  Future<void> loadNextPage() async{
+    if ( isLoading ) return;
+    isLoading = true;
 
-  Future<void> loadNextPage() async {
-    if (_isLoading) return;
-
-    _isLoading = true;
     currentPage++;
-
-    final List<Movie> movies =
-        await movieStrategy.fetchMoreMovies(page: currentPage);
+    final List<Movie> movies = await fetchMoreMovies( page: currentPage );
     state = [...state, ...movies];
+    
     await Future.delayed(const Duration(milliseconds: 300));
-    _isLoading = false;
+    isLoading = false;
   }
+
+
 }
 
-enum RequestType { nowPlaying, popular, topRated, upcoming }
-
-class MovieStrategy {
-  final MovieCallback movieCallback;
-
-  MovieStrategy({required this.movieCallback});
-
-  Future<List<Movie>> fetchMoreMovies({int page = 1}) async {
-    return await movieCallback(page: page);
-  }
-}
-
-class MovieStrategyFactory {
-  MovieStrategy create(
-      RequestType requestType, NotifierProviderRef<List<Movie>> ref) {
-    late MovieCallback movieCallback;
-
-    if (requestType == RequestType.nowPlaying) {
-      movieCallback = ref.read(movieRepositoryProvider).getNowPlaying;
-    } else if (requestType == RequestType.popular) {
-      movieCallback = ref.read(movieRepositoryProvider).getPopular;
-    } else if (requestType == RequestType.topRated) {
-      movieCallback = ref.read(movieRepositoryProvider).getTopRated;
-    } else if (requestType == RequestType.upcoming) {
-      movieCallback = ref.read(movieRepositoryProvider).getUpcoming;
-    } else {
-      throw UnimplementedError();
-    }
-    return MovieStrategy(movieCallback: movieCallback);
-  }
-}
